@@ -1,0 +1,9 @@
+.pageContent {
+  margin: 0px 255px;
+}
+.loginPage {
+  margin: 10px 255px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
