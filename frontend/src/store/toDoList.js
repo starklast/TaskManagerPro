@@ -4,6 +4,7 @@ import { getAllTasks, addTask, updateTask } from '~/api/server'
 
 import {
   ID,
+  KEY,
   TITLE,
   DESCRIPTION,
   CREATED_DATE,
@@ -28,6 +29,7 @@ export default class {
     this.taskList = []
 
     this.state = 'pending'
+    this.loading = false
     makeAutoObservable(this)
 
     this.rootStore = rootStore
@@ -36,6 +38,7 @@ export default class {
   }
 
   updateData() {
+    this.loadin = true
     getAllTasks().then((data) => this.setData(data))
   }
   setData(data) {
@@ -45,6 +48,7 @@ export default class {
       }
     })
     this.taskList = data
+    this.loadin = false
   }
   getNewID() {
     return (
@@ -63,6 +67,17 @@ export default class {
     newTask[CREATED_DATE] = new Date()
     newTask[ID] = this.getNewID()
     newTask[STATUS] = STATE_NEW
+    console.log(`newTask[CREATED_BY] ${newTask[CREATED_BY]}`)
+    console.log(
+      `this.rootStore.currentUser.userInfo ${this.rootStore.currentUser.userInfo}`
+    )
+    console.log(
+      `this.rootStore.currentUser.userInfo.id ${this.rootStore.currentUser.userInfo.id}`
+    )
+
+    if (!newTask[CREATED_BY]) {
+      newTask[CREATED_BY] = this.rootStore.currentUser.userInfo.id
+    }
     //this.taskList.push(newTask)
     addTask(newTask)
     this.updateData()
@@ -84,6 +99,7 @@ export default class {
     const fields = this.getFields()
     orderedFields.push(
       { ...fields[ID], key: ID },
+      { ...fields[KEY], key: KEY },
       { ...fields[TITLE], key: TITLE },
       { ...fields[DESCRIPTION], key: DESCRIPTION },
       { ...fields[STATUS], key: STATUS },
@@ -101,12 +117,21 @@ export default class {
       type: 'integer',
       primary: true,
       readonly: true,
+      visible: false,
+    }
+    fields[KEY] = {
+      title: 'KEY',
+      type: 'integer',
+      primary: true,
+      readonly: true,
+      visible: true,
     }
     fields[PARENT_ID] = {
       title: 'ID родительской задачи',
       type: 'integer',
       referenceType: TASKS,
       default: 0,
+      visible: true,
     }
     fields[TITLE] = {
       title: 'Название',
@@ -114,10 +139,12 @@ export default class {
       required: true,
       refitem: true,
       refitemtype: REFTYPETASK,
+      visible: true,
     }
     fields[DESCRIPTION] = {
       title: 'Описание',
       type: 'string',
+      visible: true,
     }
 
     fields[PRIORITY] = {
@@ -129,6 +156,7 @@ export default class {
         '0': 'Низкий',
       },
       default: 1,
+      visible: true,
     }
     fields[STATUS] = {
       title: 'Статус',
@@ -142,23 +170,27 @@ export default class {
         '6': 'Отложена',
       },
       default: 1,
+      visible: true,
     }
     fields[CREATED_BY] = {
       title: 'Постановщик',
       type: 'integer',
       referenceType: USERS,
       required: true,
+      visible: true,
     }
     fields[CREATED_DATE] = {
       title: 'Дата создания',
       type: TYPE_DATETIME,
       readonly: true,
+      visible: true,
     }
     fields[RESPONSIBLE_ID] = {
       title: 'Исполнитель',
       type: 'integer',
       referenceType: USERS,
       required: true,
+      visible: true,
     }
 
     return fields

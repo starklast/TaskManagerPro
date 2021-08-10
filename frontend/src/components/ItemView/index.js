@@ -53,7 +53,7 @@ function ItemView({ itemData, goBack }) {
                         lable={field.title}
                         value={
                           data[field.key] &&
-                          data[field.key].toLocaleDateString()
+                          new Date(data[field.key]).toLocaleDateString()
                         }
                         onChange={(value) => {
                           const newData = { ...data }

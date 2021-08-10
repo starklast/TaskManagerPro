@@ -4,13 +4,17 @@ import jwt from 'jsonwebtoken'
 let server = axios.create({
   baseURL: '/api',
 })
+let baseserver = axios.create({
+  baseURL: '/',
+})
 
-server.interceptors.request.use(function(request) {
+server.interceptors.request.use(async function(request) {
   console.log(request)
-  checkToken()
+  await checkToken()
   const userInfo = JSON.parse(localStorage.getItem('userInfo'))
   console.log('request after')
-  request.headers.authorization = 'Bearer ' + userInfo.tokens.access
+  //request.headers['Content-Type'] = 'application/json'
+  request.headers.authorization = 'Bearer ' + userInfo?.accessToken
   console.log('request')
   return request
 })
@@ -23,13 +27,15 @@ server.interceptors.response.use(function(response) {
   return response
 })
 
-export function checkToken() {
+export async function checkToken() {
   const userInfo = JSON.parse(localStorage.getItem('userInfo'))
-  console.log(userInfo)
-  if (userInfo && userInfo.tokens) {
-    if (!checkTokenExp(userInfo.tokens.access)) {
+  console.log('проверка токена')
+
+  if (userInfo && userInfo.accessToken) {
+    console.log('есть userInfo')
+    if (!checkTokenExp(userInfo.accessToken)) {
       console.log('RT-f')
-      return refreshAccessToken(userInfo)
+      return await refreshAccessToken(userInfo)
     } else return true
   }
 
@@ -51,28 +57,22 @@ function checkTokenExp(token) {
 
 async function refreshAccessToken(userInfo) {
   console.log('refresh s')
-  console.log(checkTokenExp(userInfo.tokens.refresh))
-  if (userInfo.tokens.refresh && checkTokenExp(userInfo.tokens.refresh)) {
-    console.log('refresh s 2')
-    try {
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-          authorization: 'Bearer ' + userInfo.tokens.refresh,
-        },
-      }
-
-      const { data } = await axios.post('/api/users/refreshToken', {}, config)
-
-      localStorage.setItem('userInfo', JSON.stringify(data))
-      console.log('refresh !')
-      return true
-    } catch (error) {
-      console.log('!!!!refresh !')
-      return false
+  try {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
     }
+
+    const { data } = await baseserver.get('/api/auth/refresh', {}, config)
+
+    localStorage.setItem('userInfo', JSON.stringify(data))
+    console.log('refresh !')
+    return true
+  } catch (error) {
+    console.log('!!!!refresh !')
+    return false
   }
-  return false
 }
 //export default server;
 
@@ -94,7 +94,13 @@ export async function addTask(newTask) {
   }
 }
 export async function updateTask(taskData) {
-  let data = await server.post('/tasks/updateTask', taskData)
+  console.log(taskData)
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }
+  let data = await server.post('/tasks/updateTask', taskData, config)
   if (data.status === 200) {
     return data.data
   } else {
@@ -103,7 +109,7 @@ export async function updateTask(taskData) {
 }
 
 export async function getAllUsers() {
-  let data = await axios.get('/api/users')
+  let data = await server.get('/users/getAll')
   if (data.status === 200) {
     return data.data
   } else {
@@ -121,9 +127,45 @@ export async function doLogin({ login, password }) {
     console.log('start getting info')
     console.log({ login, password })
 
-    const { data } = await axios.post(
-      '/api/users/login',
+    const { data } = await baseserver.post(
+      '/api/auth/login',
       {
+        email: login,
+        password,
+      },
+      config
+    )
+
+    localStorage.setItem('userInfo', JSON.stringify(data))
+    return { data, error: '' }
+  } catch (error) {
+    console.log('error')
+    console.log(`error.response ${error.response}`)
+    console.log(`error.response.data.message ${error.response.data.message}`)
+    console.log(`error.message ${error.message}`)
+
+    return {
+      error:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    }
+  }
+}
+export async function registration({ name, login, password }) {
+  try {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+    console.log('start getting info')
+    console.log({ name, login, password })
+
+    const { data } = await baseserver.post(
+      '/api/auth/registration',
+      {
+        name: name,
         email: login,
         password,
       },

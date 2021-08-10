@@ -41,7 +41,7 @@ export const BodyItem = ({ cName, path, icon, title, children, ...rest }) => {
   )
 }
 
-function Navbar({ SidebarData, stores }) {
+function Navbar({ SidebarData, stores, history }) {
   const [sidebar, setSidebar] = useState(false)
 
   const showSidebar = () => setSidebar(!sidebar)
@@ -57,7 +57,6 @@ function Navbar({ SidebarData, stores }) {
             <RiLogoutBoxRLine
               onClick={() => {
                 stores.currentUser.logout()
-                console.log('logout')
               }}
             />
           </Link>

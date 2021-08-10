@@ -3,6 +3,7 @@ import styles from './app.module.css'
 import TaskList from '~c/TaskList'
 import withStore from '~/hocs/withStore'
 function Home({ stores, history }) {
+  const store = stores.toDoList
   /*   const userInfo = stores.currentUser.userInfo
 
   useEffect(() => {
@@ -13,7 +14,8 @@ function Home({ stores, history }) {
 
   return (
     <div className={styles.pageContent}>
-      <TaskList />
+      {stores.toDoList.loading && <p>Loading...</p>}
+      {!stores.toDoList.loading && <TaskList />}
     </div>
   )
 }

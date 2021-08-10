@@ -19,9 +19,11 @@ import {
   PAGENAMEUSER,
   PAGENAMENEWUSER,
   PAGENAMELOGIN,
+  PAGENAMEREGISTRATION,
 } from '~/common/constant'
 import Task from '~/pages/Task'
 import User from '~/pages/User'
+import Registration from '~/pages/Registration'
 
 export const routes = [
   {
@@ -111,6 +113,12 @@ export const routes = [
     path: '/login',
     component: Login,
     type: itemType.body,
+  },
+  {
+    pageName: PAGENAMEREGISTRATION,
+    title: 'registration',
+    path: '/registration',
+    component: Registration,
   },
 ]
 export const getPathByName = (name) => {

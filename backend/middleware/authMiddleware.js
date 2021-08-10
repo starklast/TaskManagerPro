@@ -4,16 +4,13 @@ const { User } = require('../data/users')
 
 const protect = asyncHandler(async (req, res, next) => {
   let token
-  console.log(req.headers.authorization)
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
   ) {
     try {
       token = req.headers.authorization.split(' ')[1]
-      console.log(token)
-      const decoded = jwt.verify(token, process.env.JWT_SECRET)
-      console.log(decoded)
+      const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET)
       req.user = await User.findById(decoded.id)
 
       next()

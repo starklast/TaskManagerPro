@@ -9,9 +9,11 @@ function DGHead({ children, className, fields }) {
   return (
     <TableHead className={classes}>
       <TableRow>
-        {fields.map((item) => {
-          return <DGHCol key={item.key} fild={item} />
-        })}
+        {fields
+          .filter((item) => item.visible)
+          .map((item) => {
+            return <DGHCol key={item.key} fild={item} />
+          })}
       </TableRow>
     </TableHead>
   )

@@ -6,7 +6,6 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { routes } from '~/routes'
 import withStore from '~/hocs/withStore'
 import PrivateRoute from '~/hocs/PrivateRoute'
-import Login from '~/pages/login'
 
 function App({ stores }) {
   const userInfo = stores.currentUser.userInfo
@@ -19,7 +18,6 @@ function App({ stores }) {
           {routes
             .filter((item) => item.component)
             .map((item, index) => {
-              console.log(item.requireAuth)
               return item.requireAuth ? (
                 <PrivateRoute
                   key={index}

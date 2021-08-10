@@ -10,6 +10,10 @@ class RootStore {
     this.users = new users(this)
     this.currentUser = new currentUser(this)
   }
+  updateData = () => {
+    this.toDoList.updateData()
+    this.users.updateData()
+  }
 }
 
 export default new RootStore()

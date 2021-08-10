@@ -9,14 +9,16 @@ function DGRow({ children, className, fields, rowData, ownerPage }) {
   const classes = classNames('row', className)
   return (
     <TableRow className={classes}>
-      {fields.map((field) => (
-        <DGCol
-          key={field.key}
-          field={field}
-          data={rowData}
-          ownerPage={ownerPage}
-        />
-      ))}
+      {fields
+        .filter((item) => item.visible)
+        .map((field) => (
+          <DGCol
+            key={field.key}
+            field={field}
+            data={rowData}
+            ownerPage={ownerPage}
+          />
+        ))}
     </TableRow>
   )
 }

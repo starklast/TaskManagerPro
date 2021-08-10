@@ -48,7 +48,7 @@ function DGFild({
             case TYPE_DATETIME:
               return (
                 <span className={classes}>
-                  {dataFild && dataFild.toLocaleDateString()}
+                  {dataFild && new Date(dataFild).toLocaleDateString()}
                 </span>
               )
             default:

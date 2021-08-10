@@ -1,6 +1,6 @@
 import { makeAutoObservable, runInAction } from 'mobx'
 import 'babel-polyfill'
-import { ID, NAME, REFTYPEUSER, EMAIL } from '~/common/constant'
+import { ID, NAME, REFTYPEUSER, EMAIL, KEY } from '~/common/constant'
 import { getAllUsers } from '~/api/server'
 export default class {
   constructor(rootStore) {
@@ -10,10 +10,13 @@ export default class {
 
     this.rootStore = rootStore
     this.storage = this.rootStore.storage
-    this.updateData()
+    //this.updateData()
   }
   updateData() {
-    getAllUsers().then((data) => this.setData(data))
+    getAllUsers().then((data) => {
+      this.setData(data)
+      console.log(data)
+    })
   }
   setData(data) {
     this.users = data
@@ -59,6 +62,7 @@ export default class {
     const fields = this.getFields()
     orderedFields.push(
       { ...fields[ID], key: ID },
+      { ...fields[KEY], key: KEY },
       { ...fields[NAME], key: NAME },
       { ...fields[EMAIL], key: EMAIL }
     )
@@ -71,6 +75,14 @@ export default class {
         type: 'integer',
         primary: true,
         readonly: true,
+        visible: false,
+      },
+      [KEY]: {
+        title: 'ID',
+        type: 'integer',
+        primary: true,
+        readonly: true,
+        visible: true,
       },
       [NAME]: {
         title: 'User name',
@@ -79,12 +91,14 @@ export default class {
         required: true,
         refitem: true,
         refitemtype: REFTYPEUSER,
+        visible: true,
       },
       [EMAIL]: {
         title: 'e-mail',
         type: 'string',
         default: '',
         required: true,
+        visible: true,
       },
     }
   }

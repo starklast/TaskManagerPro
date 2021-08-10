@@ -1,54 +1,58 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { TextField, Button } from '@material-ui/core'
 import classNames from 'classnames'
 import styles from './app.module.css'
 import withStore from '~/hocs/withStore'
 import { checkToken } from '~/api/server'
-import { PAGENAMEREGISTRATION } from '~/common/constant/'
+import { PAGENAMETASKS } from '~/common/constant/'
 import { getPathByName } from '~/routes'
 
-function login({ stores, history }) {
+function Registration({ stores, history }) {
   let classes = classNames(styles.loginPage)
   const currentUser = stores.currentUser
 
+  const [name, setUserName] = useState('')
   const [login, setUserLogin] = useState('')
   const [password, setUserPassword] = useState('')
 
   const loading = currentUser.loading
-  const error = currentUser.error ? currentUser.error : ''
+  const error = currentUser.error
   const userInfo = currentUser.userInfo
-
-  const redirect = location.search ? location.search.split('=')[1] : '/'
-
-  console.log('rendering login')
-  console.log(`error ${error}`)
+  const [correctToken, setCorrectToken] = useState(false)
+  useEffect(() => {
+    console.log('111')
+    checkToken().then((res) => {
+      console.log(`res: ${res}`)
+      setCorrectToken(res)
+    })
+  })
 
   useEffect(() => {
-    console.log('useEffect in login')
-    checkToken().then((res) => {
-      if (res) {
-        history.push(redirect)
-      }
-    })
-  }, [history, currentUser.userInfo])
-
+    if (correctToken) {
+      history.push(PAGENAMETASKS)
+    }
+  }, [history, userInfo])
   return (
     <form className={classes} noValidate autoComplete='off'>
       <TextField
+        id='name'
+        label='Name'
+        onChange={(e) => {
+          setUserName(e.target.value)
+        }}
+      />
+      <TextField
         id='login'
-        label='login'
-        error={error.length > 0}
+        label='email'
+        helperText='login'
         onChange={(e) => {
           setUserLogin(e.target.value)
         }}
       />
       <TextField
-        error={error.length > 0}
         id='password'
         label='password'
-        helperText={error}
         onChange={(e) => {
           setUserPassword(e.target.value)
         }}
@@ -56,26 +60,19 @@ function login({ stores, history }) {
       <Button
         variant='outlined'
         onClick={() => {
-          stores.currentUser.login({ login: login, password: password }, () => {
-            //console.log(`button redirect ${redirect}`)
-            //history.push(redirect)
+          stores.currentUser.registration({
+            name: name,
+            login: login,
+            password: password,
           })
         }}
       >
-        login
-      </Button>
-      <Button
-        variant='outlined'
-        onClick={() => {
-          history.push(getPathByName(PAGENAMEREGISTRATION))
-        }}
-      >
-        Registration
+        Confirm
       </Button>
     </form>
   )
 }
 
-login.propTypes = {}
+Registration.propTypes = {}
 
-export default withStore(login)
+export default withStore(Registration)

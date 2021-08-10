@@ -1,7 +1,15 @@
 const asyncHandler = require('express-async-handler')
 const { Tasks } = require('../data/tasks')
-const generateToken = require('../utils/generateToken.js')
+const taskService = require('../service/taskService')
 
+// @desc    get all tasks
+// @route   get '/api/tasks'
+// @access  Private
+const getAll = asyncHandler(async (req, res) => {
+  const data = await taskService.getAll()
+  return res.json(data)
+  //res.json(Tasks.data)
+})
 // @desc    get all tasks
 // @route   get '/api/tasks'
 // @access  Private
@@ -20,6 +28,7 @@ const getTasksById = asyncHandler(async (req, res) => {
 // @access  Private
 const addTask = asyncHandler(async (req, res) => {
   Tasks.data.push(req.body)
+  await taskService.addTask(req.body)
   res.send('ok')
 })
 
@@ -28,17 +37,12 @@ const addTask = asyncHandler(async (req, res) => {
 // @access  Private
 const updateTask = asyncHandler(async (req, res) => {
   let { taskId, fields } = req.body
-  const taskListItem = Tasks.findById(taskId)
+  console.log(fields)
+  //chec correct data
 
-  if (!taskListItem) {
-    //this.add(fields)
-  } else {
-    for (const key in fields) {
-      if (Object.hasOwnProperty.call(fields, key)) {
-        taskListItem[key] = fields[key]
-      }
-    }
-  }
+  //save data in database
+  taskService.updateTask(fields)
+  res.send('ok')
 })
 
-module.exports = { getTasks, getTasksById, addTask, updateTask }
+module.exports = { getTasks, getTasksById, addTask, updateTask, getAll }
