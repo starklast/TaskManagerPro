@@ -50,6 +50,10 @@
   height: 60px;
 }
 
+.userName {
+  text-decoration: none;
+  color: #f5f5f5;
+}
 .navText a {
   text-decoration: none;
   color: #f5f5f5;

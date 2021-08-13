@@ -19,8 +19,9 @@ const getTasks = asyncHandler(async (req, res) => {
 // @desc    get task by id
 // @route   get /api/task/:id
 // @access  Private
-const getTasksById = asyncHandler(async (req, res) => {
-  res.json(Tasks.findOne(req.params.id))
+const getTaskById = asyncHandler(async (req, res) => {
+  const data = await taskService.getById(req.params.id)
+  res.json(data)
 })
 
 // @desc    add new task
@@ -45,4 +46,4 @@ const updateTask = asyncHandler(async (req, res) => {
   res.send('ok')
 })
 
-module.exports = { getTasks, getTasksById, addTask, updateTask, getAll }
+module.exports = { getTasks, getTaskById, addTask, updateTask, getAll }

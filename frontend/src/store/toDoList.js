@@ -1,6 +1,6 @@
 import { makeAutoObservable, runInAction } from 'mobx'
 import 'babel-polyfill'
-import { getAllTasks, addTask, updateTask } from '~/api/server'
+import { getAllTasks, addTask, updateTask, getTaskById } from '~/api/server'
 
 import {
   ID,
@@ -49,6 +49,7 @@ export default class {
     })
     this.taskList = data
     this.loadin = false
+    console.log(data)
   }
   getNewID() {
     return (
@@ -67,13 +68,6 @@ export default class {
     newTask[CREATED_DATE] = new Date()
     newTask[ID] = this.getNewID()
     newTask[STATUS] = STATE_NEW
-    console.log(`newTask[CREATED_BY] ${newTask[CREATED_BY]}`)
-    console.log(
-      `this.rootStore.currentUser.userInfo ${this.rootStore.currentUser.userInfo}`
-    )
-    console.log(
-      `this.rootStore.currentUser.userInfo.id ${this.rootStore.currentUser.userInfo.id}`
-    )
 
     if (!newTask[CREATED_BY]) {
       newTask[CREATED_BY] = this.rootStore.currentUser.userInfo.id
@@ -195,12 +189,17 @@ export default class {
 
     return fields
   }
-  get(taskId) {
+  async get(taskId) {
     ///const taskListItem = { ...this.taskList[taskId] }
-    console.log(this.taskList)
-    const taskListItem = {
+    this.loadin = true
+
+    const taskListItem = { ...(await getTaskById(taskId)) }
+    console.log(taskListItem)
+    this.loadin = false
+
+    /* const taskListItem = {
       ...this.taskList.find((item) => item[ID] == taskId),
-    }
+    } */
     if (!taskListItem) {
       taskListItem = {}
     }

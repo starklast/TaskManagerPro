@@ -45,7 +45,7 @@ function Navbar({ SidebarData, stores, history }) {
   const [sidebar, setSidebar] = useState(false)
 
   const showSidebar = () => setSidebar(!sidebar)
-
+  console.log(stores.currentUser.userInfo)
   return (
     <>
       <IconContext.Provider value={{ color: '#fff' }}>
@@ -53,6 +53,9 @@ function Navbar({ SidebarData, stores, history }) {
           <Link to='#' className={styles.menuBars}>
             <FaBars onClick={showSidebar} />
           </Link>
+          <strong className={styles.userName}>
+            {stores.currentUser.userInfo.name}
+          </strong>
           <Link to='#' className={styles.menuBars}>
             <RiLogoutBoxRLine
               onClick={() => {

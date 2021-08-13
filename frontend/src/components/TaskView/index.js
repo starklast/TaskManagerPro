@@ -12,9 +12,10 @@ function TaskView({ id, stores }) {
   const [fields, setFields] = useState([])
   const taskList = stores.toDoList
   useEffect(() => {
-    const newData = taskList.get(id)
-    setData(newData)
-    setFields(newData.getOrderedFields())
+    taskList.get(id).then((data) => {
+      setData(data)
+      setFields(data.getOrderedFields())
+    })
   }, [id])
   return (
     <>

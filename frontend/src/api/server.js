@@ -1,5 +1,6 @@
 import axios from 'axios'
 import jwt from 'jsonwebtoken'
+import store from '~/store'
 
 let server = axios.create({
   baseURL: '/api',
@@ -67,6 +68,7 @@ async function refreshAccessToken(userInfo) {
     const { data } = await baseserver.get('/api/auth/refresh', {}, config)
 
     localStorage.setItem('userInfo', JSON.stringify(data))
+    store.currentUser.setData({ data })
     console.log('refresh !')
     return true
   } catch (error) {
@@ -78,6 +80,15 @@ async function refreshAccessToken(userInfo) {
 
 export async function getAllTasks() {
   let data = await server.get('/tasks')
+  if (data.status === 200) {
+    return data.data
+  } else {
+    return []
+  }
+}
+
+export async function getTaskById(id) {
+  let data = await server.get(`/tasks/${id}`)
   if (data.status === 200) {
     return data.data
   } else {
@@ -110,6 +121,18 @@ export async function updateTask(taskData) {
 
 export async function getAllUsers() {
   let data = await server.get('/users/getAll')
+  if (data.status === 200) {
+    return data.data
+  } else {
+    return []
+  }
+}
+
+export async function getUserById(id) {
+  if (!id) {
+    return []
+  }
+  let data = await server.get(`/users/${id}`)
   if (data.status === 200) {
     return data.data
   } else {

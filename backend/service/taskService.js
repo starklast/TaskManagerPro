@@ -21,9 +21,20 @@ class TaskService {
   })
 
   getAll = asyncHandler(async () => {
-    const users = await TaskModel.find()
-    return users.map((item) => new TaskDto(item))
+    const tasks = await TaskModel.find()
+      .populate('created_by', '_id email')
+      .populate('responsible_id', '_id email')
+    //console.log(tasks)
+    return tasks.map((item) => new TaskDto(item))
   })
+
+  getById = asyncHandler(async (id) => {
+    const task = await TaskModel.findById(id)
+      .populate('created_by', '_id email')
+      .populate('responsible_id', '_id email')
+    return new TaskDto(task)
+  })
+
   addTask = asyncHandler(async (data) => {
     const user = await TaskModel.create({
       ...data,
@@ -32,7 +43,13 @@ class TaskService {
   })
   updateTask = asyncHandler(async (data) => {
     console.log(data['id'])
-
+    for (const key in data) {
+      if (Object.hasOwnProperty.call(data, key)) {
+        if (typeof data[key] == 'object') {
+          data[key] = data[key] && data[key].id
+        }
+      }
+    }
     return await TaskModel.updateOne({ _id: data['id'] }, data)
     const task = await TaskModel.findById(data['id'])
     console.log(task)

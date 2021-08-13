@@ -1,3 +1,4 @@
+const UserDto = require('./userDto')
 module.exports = class TaskDto {
   constructor(model) {
     this.id = model._id
@@ -8,7 +9,7 @@ module.exports = class TaskDto {
     this.prioritY = model.prioritY
     this.status = model.status
     this.created_date = model.created_date
-    this.created_by = model.created_by
-    this.responsible_id = model.responsible_id
+    this.created_by = new UserDto(model.created_by)
+    this.responsible_id = new UserDto(model.responsible_id)
   }
 }

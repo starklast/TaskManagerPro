@@ -21,6 +21,9 @@ function DGFild({
   const dataFild = data[field.key]
   switch (field.referenceType) {
     case USERS:
+      if (!dataFild) {
+        return <></>
+      }
       return <User userId={dataFild} ownerPage={ownerPage} />
 
     default:

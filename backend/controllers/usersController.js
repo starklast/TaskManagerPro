@@ -14,5 +14,12 @@ class UsersController {
       next(e)
     }
   })
+  // @desc    get task by id
+  // @route   get /api/task/:id
+  // @access  Private
+  getUserById = asyncHandler(async (req, res) => {
+    const data = await userService.getById(req.params.id)
+    res.json(data)
+  })
 }
 module.exports = new UsersController()

@@ -6,9 +6,8 @@ import { getPathByName } from '~/routes'
 import { ID, PAGENAMEUSER, NAME } from '~/common/constant'
 
 function User({ userId, ownerPage, ...props }) {
-  const usersStore = props.stores.users
-
-  let userInfo = usersStore.get(userId)
+  let userInfo = userId
+  //console.log(userInfo)
   /* if (!userInfo) {
     userInfo = {}
     userInfo.name = ''
@@ -33,4 +32,4 @@ function User({ userId, ownerPage, ...props }) {
 
 User.propTypes = {}
 
-export default withStore(User)
+export default User

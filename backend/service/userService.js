@@ -30,6 +30,11 @@ class UserService {
     return users.map((item) => new UserDto(item))
   })
 
+  getById = asyncHandler(async (id) => {
+    const user = await UserModel.findById(id)
+    return new UserDto(user)
+  })
+
   registration = asyncHandler(async (email, password) => {
     const candidate = await UserModel.findOne({ email })
     if (candidate) {

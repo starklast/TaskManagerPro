@@ -1,11 +1,12 @@
 import { makeAutoObservable, runInAction } from 'mobx'
 import 'babel-polyfill'
 import { ID, NAME, REFTYPEUSER, EMAIL, KEY } from '~/common/constant'
-import { getAllUsers } from '~/api/server'
+import { getAllUsers, getUserById } from '~/api/server'
 export default class {
   constructor(rootStore) {
     this.users = []
     this.state = 'pending'
+    this.loading = false
     makeAutoObservable(this)
 
     this.rootStore = rootStore
@@ -102,8 +103,14 @@ export default class {
       },
     }
   }
-  get(userId) {
-    const userItem = { ...this.users.find((item) => item[ID] == userId) }
+  async get(userId) {
+    this.loadin = true
+
+    const userItem = { ...(await getUserById(userId)) }
+    console.log(userItem)
+    this.loadin = false
+
+    //const userItem = { ...this.users.find((item) => item[ID] == userId) }
     if (userItem) {
       userItem.update = (fields) => this.update(userId, fields)
 
@@ -113,6 +120,16 @@ export default class {
 
       userItem.getOrderedFields = () => this.getOrderedFields()
 
+      return userItem
+    } else {
+      return null
+    }
+  }
+
+  findById(userId) {
+    const userItem = this.users.find((item) => item[ID] == userId)
+
+    if (userItem) {
       return userItem
     } else {
       return null

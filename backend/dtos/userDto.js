@@ -4,10 +4,10 @@ module.exports = class UserDto {
   isActivated
 
   constructor(model) {
-    this.email = model.email
-    this.name = model.email
-    this.id = model._id
-    this.key = model.key
-    this.isActivated = model.isActivated
+    this.email = model && model.email
+    this.name = model && model.email
+    this.id = model && model._id
+    this.key = model && model.key
+    this.isActivated = model && model.isActivated
   }
 }
