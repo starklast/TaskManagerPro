@@ -2,7 +2,7 @@ import React from 'react'
 import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import { getAllUsers, getUsers, getFilterUsers } from '~/api/server'
+import { userService } from '~/api/server'
 import styles from './app.module.css'
 
 export default function Asynchronous({ field, userId, onChenge }) {
@@ -18,7 +18,7 @@ export default function Asynchronous({ field, userId, onChenge }) {
     }
 
     ;(async () => {
-      const users = await getUsers(5)
+      const users = await userService.getUsers(5)
       if (userId?.id && !users.some((item) => item.id == userId.id)) {
         users.push(userId)
       }
@@ -62,8 +62,8 @@ export default function Asynchronous({ field, userId, onChenge }) {
         if (reason == 'input') {
           ;(async () => {
             const users = value
-              ? await getFilterUsers(value, 5)
-              : await getUsers(5)
+              ? await userService.getFilterUsers(value, 5)
+              : await userService.getUsers(5)
             if (userId?.id && !users.some((item) => item.id == userId.id)) {
               users.push(userId)
             }

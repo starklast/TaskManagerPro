@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from 'mobx'
 import 'babel-polyfill'
 import { ID, NAME, REFTYPEUSER, EMAIL, KEY } from '~/common/constant'
-import { getAllUsers, getUserById } from '~/api/server'
+import { userService } from '~/api/server'
 export default class {
   constructor(rootStore) {
     this.users = []
@@ -14,7 +14,7 @@ export default class {
     //this.updateData()
   }
   updateData() {
-    getAllUsers().then((data) => {
+    userService.getAllUsers().then((data) => {
       this.setData(data)
       console.log(data)
     })
@@ -106,7 +106,7 @@ export default class {
   async get(userId) {
     this.loadin = true
 
-    const userItem = { ...(await getUserById(userId)) }
+    const userItem = { ...(await userService.getUserById(userId)) }
     console.log(userItem)
     this.loadin = false
 

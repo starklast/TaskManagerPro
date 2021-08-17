@@ -127,41 +127,45 @@ class TaskServise {
 
 export const taskService = new TaskServise()
 
-export async function getAllUsers() {
-  let data = await server.get('/users/getAll')
-  if (data.status === 200) {
-    return data.data
-  } else {
-    return []
+class UserService {
+  async getAllUsers() {
+    let data = await server.get('/users/getAll')
+    if (data.status === 200) {
+      return data.data
+    } else {
+      return []
+    }
+  }
+  async getUsers(count) {
+    let data = await server.get(`/users/get/${count}`)
+    if (data.status === 200) {
+      return data.data
+    } else {
+      return []
+    }
+  }
+  async getFilterUsers(filter, count) {
+    let data = await server.get(`/users/getFiltered/${count}&&${filter}`)
+    if (data.status === 200) {
+      return data.data
+    } else {
+      return []
+    }
+  }
+  async getUserById(id) {
+    if (!id) {
+      return []
+    }
+    let data = await server.get(`/users/${id}`)
+    if (data.status === 200) {
+      return data.data
+    } else {
+      return []
+    }
   }
 }
-export async function getUsers(count) {
-  let data = await server.get(`/users/get/${count}`)
-  if (data.status === 200) {
-    return data.data
-  } else {
-    return []
-  }
-}
-export async function getFilterUsers(filter, count) {
-  let data = await server.get(`/users/getFiltered/${count}&&${filter}`)
-  if (data.status === 200) {
-    return data.data
-  } else {
-    return []
-  }
-}
-export async function getUserById(id) {
-  if (!id) {
-    return []
-  }
-  let data = await server.get(`/users/${id}`)
-  if (data.status === 200) {
-    return data.data
-  } else {
-    return []
-  }
-}
+
+export const userService = new UserService()
 
 export async function doLogin({ login, password }) {
   try {
