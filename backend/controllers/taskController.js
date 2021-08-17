@@ -24,12 +24,24 @@ const getTaskById = asyncHandler(async (req, res) => {
   res.json(data)
 })
 
+const deleteTask = asyncHandler(async (req, res) => {
+  const { id } = req.body
+  const data = await taskService.delete(id)
+  res.json(data)
+})
+
 // @desc    add new task
 // @route   POST '/api/task'
 // @access  Private
 const addTask = asyncHandler(async (req, res) => {
-  Tasks.data.push(req.body)
-  await taskService.addTask(req.body)
+  console.log(req.user)
+  const data = { ...req.body }
+  if (!data['created_by'] && req.user) {
+    console.log(req.user.id)
+    data['created_by'] = req.user
+  }
+  console.log(data)
+  await taskService.addTask(data)
   res.send('ok')
 })
 
@@ -46,4 +58,11 @@ const updateTask = asyncHandler(async (req, res) => {
   res.send('ok')
 })
 
-module.exports = { getTasks, getTaskById, addTask, updateTask, getAll }
+module.exports = {
+  getTasks,
+  getTaskById,
+  addTask,
+  updateTask,
+  getAll,
+  deleteTask,
+}

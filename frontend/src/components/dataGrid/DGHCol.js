@@ -5,7 +5,7 @@ import { TableCell } from '@material-ui/core'
 import './styles.css'
 function DGHCol({ children, className, fild }) {
   const classes = classNames('hCol', className)
-  return <TableCell>{fild.title}</TableCell>
+  return <TableCell style={{ minWidth: 100 }}>{fild.title}</TableCell>
   // <th className={classes}>{children}</th>
 }
 

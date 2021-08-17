@@ -35,7 +35,21 @@ class TaskService {
     return new TaskDto(task)
   })
 
+  delete = asyncHandler(async (id) => {
+    const task = await TaskModel.findByIdAndDelete(id)
+      .populate('created_by', '_id email')
+      .populate('responsible_id', '_id email')
+    return new TaskDto(task)
+  })
+
   addTask = asyncHandler(async (data) => {
+    for (const key in data) {
+      if (Object.hasOwnProperty.call(data, key)) {
+        if (typeof data[key] == 'object') {
+          data[key] = data[key] && data[key].id
+        }
+      }
+    }
     const user = await TaskModel.create({
       ...data,
       key: this.getID.next().value,

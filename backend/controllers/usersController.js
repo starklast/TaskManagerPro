@@ -14,6 +14,26 @@ class UsersController {
       next(e)
     }
   })
+
+  getUsers = asyncHandler(async (req, res, next) => {
+    try {
+      const usersData = await userService.getUsers(parseInt(req.params.count))
+      return res.json(usersData)
+    } catch (e) {
+      next(e)
+    }
+  })
+  getFilteredUsers = asyncHandler(async (req, res, next) => {
+    try {
+      const usersData = await userService.getFilteredUsers(
+        parseInt(req.params.count),
+        req.params.filter
+      )
+      return res.json(usersData)
+    } catch (e) {
+      next(e)
+    }
+  })
   // @desc    get task by id
   // @route   get /api/task/:id
   // @access  Private

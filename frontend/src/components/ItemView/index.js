@@ -92,7 +92,7 @@ function ItemView({ itemData, goBack }) {
           <button onClick={goBack}>Cancel</button>
           <button
             onClick={() => {
-              data.delete(data[ID])
+              data.delete()
               goBack()
             }}
           >

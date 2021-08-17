@@ -2,7 +2,7 @@ import React from 'react'
 import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import { getAllUsers } from '~/api/server'
+import { getAllUsers, getUsers, getFilterUsers } from '~/api/server'
 import styles from './app.module.css'
 
 export default function Asynchronous({ field, userId, onChenge }) {
@@ -18,9 +18,12 @@ export default function Asynchronous({ field, userId, onChenge }) {
     }
 
     ;(async () => {
-      const users = await getAllUsers()
+      const users = await getUsers(5)
+      if (userId?.id && !users.some((item) => item.id == userId.id)) {
+        users.push(userId)
+      }
       if (active) {
-        setOptions(users.map((item) => item))
+        setOptions(users)
       }
     })()
 
@@ -34,7 +37,6 @@ export default function Asynchronous({ field, userId, onChenge }) {
       setOptions([])
     }
   }, [open])
-
   return (
     <Autocomplete
       id={field.key}
@@ -54,8 +56,20 @@ export default function Asynchronous({ field, userId, onChenge }) {
       loading={loading}
       value={userId?.id ? userId : null}
       onChange={(event, value) => {
-        console.log(value)
         onChenge(value)
+      }}
+      onInputChange={(event, value, reason) => {
+        if (reason == 'input') {
+          ;(async () => {
+            const users = value
+              ? await getFilterUsers(value, 5)
+              : await getUsers(5)
+            if (userId?.id && !users.some((item) => item.id == userId.id)) {
+              users.push(userId)
+            }
+            setOptions(users)
+          })()
+        }
       }}
       renderInput={(params) => (
         <TextField

@@ -112,7 +112,7 @@ export const routes = [
     title: 'login',
     path: '/login',
     component: Login,
-    type: itemType.body,
+    type: null,
   },
   {
     pageName: PAGENAMEREGISTRATION,

@@ -30,6 +30,19 @@ class UserService {
     return users.map((item) => new UserDto(item))
   })
 
+  getUsers = asyncHandler(async (count) => {
+    const users = await UserModel.find({}, null, { limit: count })
+    return users.map((item) => new UserDto(item))
+  })
+  getFilteredUsers = asyncHandler(async (count, filter) => {
+    const users = await UserModel.find(
+      { email: { $regex: new RegExp(`${filter}`, 'i') } },
+      null,
+      { limit: count }
+    )
+    return users.map((item) => new UserDto(item))
+  })
+
   getById = asyncHandler(async (id) => {
     const user = await UserModel.findById(id)
     return new UserDto(user)

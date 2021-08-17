@@ -3,6 +3,9 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 import { RiEdit2Line } from 'react-icons/ri'
+
+import DGFildMenu from './DGFildMenu'
+
 import withStore from '~/hocs/withStore'
 import { TITLE, USERS, ID, TYPE_ENUM, TYPE_DATETIME } from '~/common/constant'
 import User from '~/components/User'
@@ -19,18 +22,28 @@ function DGFild({
 }) {
   let classes = classNames('fild', className)
   const dataFild = data[field.key]
+
+  let arrComponents = []
+  if (field.menu) {
+    arrComponents.push(<DGFildMenu key='menu' field={field} data={data} />)
+  }
   switch (field.referenceType) {
     case USERS:
       if (!dataFild) {
-        return <></>
+        break
+        //return <></>
       }
-      return <User userId={dataFild} ownerPage={ownerPage} />
+      arrComponents.push(
+        <User key='data' userId={dataFild} ownerPage={ownerPage} />
+      )
+      break
+    //return <User userId={dataFild} ownerPage={ownerPage} />
 
     default:
       switch (field.refitem) {
         case true:
-          return (
-            <span className={classes}>
+          arrComponents.push(
+            <span key='data' className={classes}>
               <Link
                 to={getPathByRefType(field.refitemtype).replace(
                   /:id/,
@@ -38,36 +51,43 @@ function DGFild({
                 )}
                 className='data'
               >
-                {dataFild}
+                {!dataFild ? '[empty]' : dataFild}
               </Link>
               {/* <RiEdit2Line className={'btn btn-edit'} /> */}
             </span>
           )
-
+          break
         default:
           switch (field.type) {
             case TYPE_ENUM:
-              return <span className={classes}>{field.values[dataFild]}</span>
+              arrComponents.push(
+                <span key='data' className={classes}>
+                  {field.values[dataFild]}
+                </span>
+              )
+              break
             case TYPE_DATETIME:
-              return (
-                <span className={classes}>
+              arrComponents.push(
+                <span key='data' className={classes}>
                   {dataFild && new Date(dataFild).toLocaleDateString()}
                 </span>
               )
+              break
             default:
               switch (field.key) {
                 case TITLE:
                   classes = classNames('title', classes)
-                  return (
-                    <span className={classes}>
+                  arrComponents.push(
+                    <span key='data' className={classes}>
                       {dataFild}
                       <RiEdit2Line className={'btn btn-edit'} />
                     </span>
                   )
+                  break
 
                 default:
-                  return (
-                    <span className={classes}>
+                  arrComponents.push(
+                    <span key='data' className={classes}>
                       {short &&
                       typeof dataFild == 'string' &&
                       dataFild.length > 20
@@ -75,10 +95,12 @@ function DGFild({
                         : dataFild}
                     </span>
                   )
+                  break
               }
           }
       }
   }
+  return arrComponents
 }
 
 DGFild.propTypes = {

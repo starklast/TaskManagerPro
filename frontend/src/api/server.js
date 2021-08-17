@@ -77,47 +77,60 @@ async function refreshAccessToken(userInfo) {
   }
 }
 //export default server;
+class TaskServise {
+  async getAllTasks() {
+    let data = await server.get('/tasks')
+    if (data.status === 200) {
+      return data.data
+    } else {
+      return []
+    }
+  }
 
-export async function getAllTasks() {
-  let data = await server.get('/tasks')
-  if (data.status === 200) {
-    return data.data
-  } else {
-    return []
+  async getTaskById(id) {
+    let data = await server.get(`/tasks/${id}`)
+    if (data.status === 200) {
+      return data.data
+    } else {
+      return []
+    }
+  }
+
+  async deleteTask(id) {
+    let data = await server.post('/tasks/delete', { id })
+    if (data.status === 200) {
+      return data.data
+    } else {
+      return []
+    }
+  }
+
+  async addTask(newTask) {
+    let data = await server.post('/tasks/addTask', newTask)
+    if (data.status === 200) {
+      return data.data
+    } else {
+      return []
+    }
+  }
+
+  async updateTask(taskData) {
+    console.log(taskData)
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+    let data = await server.post('/tasks/updateTask', taskData, config)
+    if (data.status === 200) {
+      return data.data
+    } else {
+      return []
+    }
   }
 }
 
-export async function getTaskById(id) {
-  let data = await server.get(`/tasks/${id}`)
-  if (data.status === 200) {
-    return data.data
-  } else {
-    return []
-  }
-}
-
-export async function addTask(newTask) {
-  let data = await server.post('/tasks/addTask', newTask)
-  if (data.status === 200) {
-    return data.data
-  } else {
-    return []
-  }
-}
-export async function updateTask(taskData) {
-  console.log(taskData)
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }
-  let data = await server.post('/tasks/updateTask', taskData, config)
-  if (data.status === 200) {
-    return data.data
-  } else {
-    return []
-  }
-}
+export const taskService = new TaskServise()
 
 export async function getAllUsers() {
   let data = await server.get('/users/getAll')
@@ -127,7 +140,22 @@ export async function getAllUsers() {
     return []
   }
 }
-
+export async function getUsers(count) {
+  let data = await server.get(`/users/get/${count}`)
+  if (data.status === 200) {
+    return data.data
+  } else {
+    return []
+  }
+}
+export async function getFilterUsers(filter, count) {
+  let data = await server.get(`/users/getFiltered/${count}&&${filter}`)
+  if (data.status === 200) {
+    return data.data
+  } else {
+    return []
+  }
+}
 export async function getUserById(id) {
   if (!id) {
     return []
