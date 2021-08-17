@@ -121,7 +121,7 @@ export default class {
       primary: true,
       readonly: true,
       visible: true,
-      menu: true,
+      menu: false,
     }
     fields[PARENT_ID] = {
       title: 'ID родительской задачи',

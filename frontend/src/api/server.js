@@ -11,7 +11,7 @@ let baseserver = axios.create({
 
 server.interceptors.request.use(async function(request) {
   console.log(request)
-  await checkToken()
+  await tokenService.checkToken()
   const userInfo = JSON.parse(localStorage.getItem('userInfo'))
   console.log('request after')
   //request.headers['Content-Type'] = 'application/json'
@@ -28,55 +28,50 @@ server.interceptors.response.use(function(response) {
   return response
 })
 
-export async function checkToken() {
-  const userInfo = JSON.parse(localStorage.getItem('userInfo'))
-  console.log('проверка токена')
+class TokenService {
+  async checkToken() {
+    const userInfo = JSON.parse(localStorage.getItem('userInfo'))
 
-  if (userInfo && userInfo.accessToken) {
-    console.log('есть userInfo')
-    if (!checkTokenExp(userInfo.accessToken)) {
-      console.log('RT-f')
-      return await refreshAccessToken(userInfo)
-    } else return true
-  }
-
-  console.log('6-f')
-  return false
-}
-
-function checkTokenExp(token) {
-  if (token) {
-    const payload = jwt.decode(token)
-    console.log(payload.exp)
-    console.log(new Date() / 1000 - 1)
-    if (payload.exp > new Date() / 1000 - 1) {
-      return true
-    }
-  }
-  return false
-}
-
-async function refreshAccessToken(userInfo) {
-  console.log('refresh s')
-  try {
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    if (userInfo && userInfo.accessToken) {
+      if (!this.checkTokenExp(userInfo.accessToken)) {
+        return await this.refreshAccessToken(userInfo)
+      } else return true
     }
 
-    const { data } = await baseserver.get('/api/auth/refresh', {}, config)
-
-    localStorage.setItem('userInfo', JSON.stringify(data))
-    store.currentUser.setData({ data })
-    console.log('refresh !')
-    return true
-  } catch (error) {
-    console.log('!!!!refresh !')
     return false
   }
+
+  checkTokenExp(token) {
+    if (token) {
+      const payload = jwt.decode(token)
+      if (payload.exp > new Date() / 1000 - 1) {
+        return true
+      }
+    }
+    return false
+  }
+
+  async refreshAccessToken(userInfo) {
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+
+      const { data } = await baseserver.get('/api/auth/refresh', {}, config)
+
+      localStorage.setItem('userInfo', JSON.stringify(data))
+      store.currentUser.setData({ data })
+      return true
+    } catch (error) {
+      return false
+    }
+  }
 }
-//export default server;
+
+export const tokenService = new TokenService()
+
 class TaskServise {
   async getAllTasks() {
     let data = await server.get('/tasks')

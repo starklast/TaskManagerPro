@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import withStore from '~/hocs/withStore'
 import { Route, Redirect } from 'react-router-dom'
-import { checkToken } from '~/api/server'
+import { tokenService } from '~/api/server'
 import { set } from 'mobx'
 
 function PrivateRoute({ children, stores, component, ...rest }) {
@@ -11,7 +11,7 @@ function PrivateRoute({ children, stores, component, ...rest }) {
   useEffect(() => {
     console.log('PR start')
     setloading(true)
-    checkToken().then((res) => {
+    tokenService.checkToken().then((res) => {
       console.log(`res ${res}`)
       setCorrectToken(res)
       console.log(`correctToken ${correctToken}`)

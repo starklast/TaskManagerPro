@@ -4,7 +4,7 @@ import { TextField, Button } from '@material-ui/core'
 import classNames from 'classnames'
 import styles from './app.module.css'
 import withStore from '~/hocs/withStore'
-import { checkToken } from '~/api/server'
+import { tokenService } from '~/api/server'
 import { PAGENAMETASKS } from '~/common/constant/'
 import { getPathByName } from '~/routes'
 
@@ -22,7 +22,7 @@ function Registration({ stores, history }) {
   const [correctToken, setCorrectToken] = useState(false)
   useEffect(() => {
     console.log('111')
-    checkToken().then((res) => {
+    tokenService.checkToken().then((res) => {
       console.log(`res: ${res}`)
       setCorrectToken(res)
     })

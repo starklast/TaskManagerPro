@@ -9,7 +9,7 @@ import UserSelectInput from '~/components/UserSelectInput'
 import EnumSelectInput from '~/components/EnumSelectInput'
 function ItemView({ itemData, goBack }) {
   const [data, setData] = useState(itemData)
-  const fields = itemData.getOrderedFields()
+  const fields = itemData.getOrderedFields().filter((item) => item.visible)
   useEffect(() => {
     setData(itemData)
   }, [itemData])

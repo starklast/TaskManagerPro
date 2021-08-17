@@ -5,7 +5,7 @@ import { TextField, Button } from '@material-ui/core'
 import classNames from 'classnames'
 import styles from './app.module.css'
 import withStore from '~/hocs/withStore'
-import { checkToken } from '~/api/server'
+import { tokenService } from '~/api/server'
 import { PAGENAMEREGISTRATION } from '~/common/constant/'
 import { getPathByName } from '~/routes'
 
@@ -27,7 +27,7 @@ function login({ stores, history }) {
 
   useEffect(() => {
     console.log('useEffect in login')
-    checkToken().then((res) => {
+    tokenService.checkToken().then((res) => {
       if (res) {
         history.push(redirect)
       }
