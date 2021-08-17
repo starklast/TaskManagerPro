@@ -1,6 +1,6 @@
 import { makeAutoObservable, runInAction } from 'mobx'
 import 'babel-polyfill'
-import { getAllTasks, addTask, updateTask, getTaskById } from '~/api/server'
+import { taskService } from '~/api/server'
 
 import {
   ID,
@@ -39,7 +39,7 @@ export default class {
 
   updateData() {
     this.loadin = true
-    getAllTasks().then((data) => this.setData(data))
+    taskService.getAllTasks().then((data) => this.setData(data))
   }
   setData(data) {
     data.forEach((item) => {
@@ -71,20 +71,22 @@ export default class {
 
     if (!newTask[CREATED_BY]) {
       newTask[CREATED_BY] = this.rootStore.currentUser.userInfo.id
+      console.log(`CREATED_BY: ${this.rootStore.currentUser.userInfo.id}`)
     }
     //this.taskList.push(newTask)
-    addTask(newTask)
+    taskService.addTask(newTask)
     this.updateData()
   }
-  delite(taskId) {
-    this.taskList.splice(taskId, 1)
+  delete(taskId) {
+    taskService.deleteTask(taskId)
+    //this.taskList.splice(taskId, 1)
   }
 
   update(taskId, fields) {
     if (!fields[ID] || fields[ID] == '') {
       this.add(fields)
     } else {
-      updateTask({ taskId, fields })
+      taskService.updateTask({ taskId, fields })
     }
     this.updateData()
   }
@@ -119,6 +121,7 @@ export default class {
       primary: true,
       readonly: true,
       visible: true,
+      menu: true,
     }
     fields[PARENT_ID] = {
       title: 'ID родительской задачи',
@@ -193,8 +196,10 @@ export default class {
     ///const taskListItem = { ...this.taskList[taskId] }
     this.loadin = true
 
-    const taskListItem = { ...(await getTaskById(taskId)) }
-    console.log(taskListItem)
+    let taskListItem = null
+    if (taskId) {
+      taskListItem = { ...(await taskService.getTaskById(taskId)) }
+    }
     this.loadin = false
 
     /* const taskListItem = {
@@ -207,6 +212,7 @@ export default class {
     taskListItem.update = (fields) => {
       return this.update(taskId, fields)
     }
+    taskListItem.delete = () => this.delete(taskId)
 
     taskListItem.delegate = (userId) => this.delegate(taskId, userId)
 
