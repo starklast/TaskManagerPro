@@ -1,7 +1,7 @@
 {
   "name": "ecom",
   "version": "1.0.0",
-  "description": "MERN shoping cart app",
+  "description": "TaskManager",
   "main": "server.js",
   "dependencies": {
     "bcryptjs": "^2.4.3",

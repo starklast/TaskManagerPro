@@ -1,7 +1,7 @@
 {
   "name": "sample",
   "version": "1.0.0",
-  "description": "",
+  "description": "TaskManager",
   "main": "main.js",
   "scripts": {
     "dev": "webpack-dev-server --mode development --open",
